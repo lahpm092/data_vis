@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+
+{% block title %}
+title
+{% endblock %}
+
+{% block body %}
+<h1>This is a test</h1>
+<p>part of the test</p>
+<ol>
+{% for i in clinical_test %}
+	<li class="test">{{ i }}</li>
+{% endfor %}
+</ol>
+
+{% for i in infecto_test %}
+<svg>
+{{ i }}
+</svg>
+{% endfor %}
+<div id="container"><p>this is the container</p></div>
+	<!-- <svg id="container2" height='250' width='350'>
+		<g id='body' style='transform:translate(50px,0px)'></g>
+		<g id='yAxis'></g>
+		<g id='xAxis'></g>
+
+	</svg> -->
+<script>
+	// d3.selectAll('.test').style('color', 'green');
+	//
+	// var svg = d3.select('svg');
+	//
+	// //create rectangle
+	// svg.append('rect')
+	// 	.attr('x', 50)
+	// 	.attr('y', 50)
+	// 	.attr('width', 200)
+	// 	.attr('height', 100);
+	let body = d3.select('body')
+	let container = d3.select('#container')
+	//d3.csv("/csv_data").then(function (data){
+		//data.sort((a,b) =>{
+			//return d3.descending(a.th1,b.th1)
+		//})
+		//let filtereddata = data.filter(d => {
+			//return d.th10 < .4
+		//})
+		//showData(filtereddata)
+	//})
+
+	d3.json("/json_data").then(sim)
+
+	function createElements(data) {
+		let nodes = body.append('g')
+			.attr('class', 'nodes')
+			.selectAll('circle')
+			.data(data.nodes)
+			.enter()
+			.append('circle')
+				.attr('r', 5)
+				.attr('fill', 'black')
+
+		let links = body.append('g')
+			.attr('class', 'links')
+			.selectAll('line')
+			.data(data.links)
+			.enter()
+			.append('line')
+	}
+
+	function updateElements(){
+		d3.select('.nodes')
+			.selectAll('circle')
+			.attr('cx', d => d.x)
+			.attr('cy', d => d.y)
+
+		d3.select('.links')
+			.selectAll('line')
+			.attr('x1', d=> d.source.x)
+			.attr('y1', d=> d.source.y)
+			.attr('x2', d=> d.target.x)
+			.attr('y2', d=> d.target.y)
+	}
+
+	function sim(data) {
+
+		createElements(data)
+
+		let bodyHeight = 400
+		let bodyWidth = 400
+
+		let simulation = d3.forceSimulation()
+			.force('link', d3.forceLink().id(
+				(d) => d.id))
+			.force('charge', d3.forceManyBody())
+			.force('center', d3.forceCenter(bodyWidth/2, bodyHeight/2))
+
+		simulation.nodes(data.nodes)
+			.on('tick', updateElements);
+
+		simulation.force('link').links(data.links)
+	}
+
+
+
+
+
+
+	// function dataLoaded(attr) {
+	// 	attr = attr.map(d => {
+	// 		d.test = test(d)
+	// 		return d
+	// 	})
+	// 	showData(attr)
+	// }
+
+	// function showData(stuff){
+	//
+	// 	let max = d3.max(stuff,
+	// 		d => d.th10)
+	//
+	// 	let scale = d3.scaleLinear()
+	// 		.range([0,100])
+	// 		.domain([0,max])
+	//
+	// 	let scalePosition = d3.scaleBand()
+	// 		.range([0,200])
+	// 		.domain(stuff.map(d => d.th2))
+	// 		.padding(0.3)
+	//
+	// 	let join = container.selectAll("rect")
+	// 		.data(stuff)
+	//
+	// 	join.enter()
+	// 		.append("rect")
+	// 		.attr("fill", "blue")
+	// 		.attr("width", d => scale(d.th10))
+	// 		.attr('height', 10)
+	// 		.attr('y', d => scalePosition(d.th2))
+	//
+	// 	let xAxis = d3.axisBottom(scale)
+	// 	.ticks(4)
+	// 	.tickFormat(d => d + 'lb')
+	//
+	// 	d3.select('#xAxis')
+	// 	.attr('transform', 'translate(0,200)')
+	// 	.call(xAxis)
+	//
+	// 	let yAxis = d3.axisLeft(scalePosition)
+	//
+	// 	d3.select('#yAxis')
+	// 	.attr('transform', 'translate(330,0)')
+	// 	.call(yAxis)
+	// }
+
+	// function showData(attrs) {
+	// 	for (let attr of attrs){
+	// 		write(attr.th1
+	// 		+ ","
+	// 		+ attr.test)
+	// 	}
+	// 	write("------------")
+	// 	sum = attrs.reduce(
+	// 		(prev, curr) => {
+	// 			return prev + curr.test
+	// 		}, 0)
+	// }
+
+	// write("line after")
+	// function write(text) {
+	// 	container.append('div').text(text)
+	// }
+
+	// function test(person){
+	// 	let test_number = person.th10 * person.th1
+	// 	return test_number
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}

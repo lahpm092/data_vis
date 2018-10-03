@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {"id": "Tuberculosis"},
+    {"id": "Malaria"},
+    {"id": "Smallpox"},
+    {"id": "Measles"},
+    {"id": "Pneumonia"}
+  ],
+  "links": [
+  {"source": "Tuberculosis", "target" : "Malaria"},
+  {"source": "Malaria", "target" : "Smallpox"},
+  {"source": "Smallpox", "target" : "Measles"},
+  {"source": "Measles", "target" : "Pneumonia"}
+  ]
+}
